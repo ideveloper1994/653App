@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Brainbuddy</string>
+    <color name="app_color">#003e53</color>
+    <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoHmtRXCTagbA/rKdDJiro7xUVMqv22IGBrdvtDarpsJpCQMuNNmtkonEvk+67UoRNnu6FkI8vkyiMqL7Sn05c7MqKwPtD6v5WttzgIfx0muz7rzYROBGn0ISpcO7yi4eREstUKX3X9IE7i/yUL9/dVPqtCcH2+5mGFyJCF2vcwlgwH53giQDngZ622DBdSHXNFan8qMmnnwnDZzI/z7y2r7sEMP8LasuCnmc8fg3iLP9hKKelsyNTYsf5Ew/ooFkFkyZ5qirZXF5wcz9XX7W/kZRx+8VcKFfR7zeY5DjC1oF5drsz3XkRqgTHCTat7lP8DzHzpPq3RPSELABhp4RNwIDAQAB</string>
+</resources>
