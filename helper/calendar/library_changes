@@ -1,0 +1,361 @@
+//IOS
+
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
+{
+  RCTAssertParam(eventDispatcher);
+
+  if ((self = [super initWithFrame:CGRectZero])) {
+    _eventDispatcher = eventDispatcher;
+    _scrollView = [[RCTCustomScrollView alloc] initWithFrame:CGRectZero];
+    _scrollView.delegate = self;
+    _scrollView.delaysContentTouches = NO;
+
+#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
+          // `contentInsetAdjustmentBehavior` is only available since iOS 11.
+          // We set the default behavior to "never" so that iOS
+          // doesn't do weird things to UIScrollView insets automatically
+          // and keeps it as an opt-in behavior.
+          if ([_scrollView respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]) {
+                _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            }
+#endif
+
+    _automaticallyAdjustContentInsets = YES;
+    _DEPRECATED_sendUpdatedChildFrames = NO;
+    _contentInset = UIEdgeInsetsZero;
+    _contentSize = CGSizeZero;
+    _lastClippedToRect = CGRectNull;
+
+    _scrollEventThrottle = 0.0;
+    _lastScrollDispatchTime = 0;
+    _cachedChildFrames = [NSMutableArray new];
+
+    _scrollListeners = [NSHashTable weakObjectsHashTable];
+
+    [self addSubview:_scrollView];
+  }
+  return self;
+}
+
+//RNSOUND issue
+//https://github.com/zmxv/react-native-sound/pull/399/commits/ca3563d7728aea7ff4914fa5900cb6ba8bbc44dd
+
+//Scrollable tab issue
+//on-drag inside scroll view
+keyboardDismissMode="on-drag"
+keyboardShouldPersistTaps='always'
+
+//ANDROID
+
+//*****************DialogModule.java - android - dismissExisting method
+   Activity activity = getCurrentActivity();
+            if(activity == null)
+              return;
+            oldFragment.dismiss();
+          }
+
+  //AlertFragment.java
+  @Override
+  public Dialog onCreateDialog(Bundle savedInstanceState) {
+      if(getActivity() == null)
+        return;
+      return createDialog(getActivity(), getArguments(), this);
+  }
+
+  public void onDismiss(DialogInterface dialog) {
+      super.onDismiss(dialog);
+      if(getActivity() == null)
+      return;
+
+      if (mListener != null) {
+          mListener.onDismiss(dialog);
+      }
+  }
+
+//React Navigation
+//Tabbar - Tabbar.js - following changes
+if (icon) {
+                  if (label) {
+                    // tabStyle.paddingTop = 8;
+                  } else {
+                    // tabStyle.padding = 12;
+                  }
+                }
+               tabBar: {
+                   //backgroundColor: '#2196f3',
+                   elevation: 4,
+                   shadowColor: 'black',
+                   shadowOpacity: 0.1,
+                   shadowRadius: StyleSheet.hairlineWidth,
+                   shadowOffset: {
+                     height: StyleSheet.hairlineWidth,
+                   },
+                   // We don't need zIndex on Android, disable it since it's buggy
+                   zIndex: Platform.OS === 'android' ? 0 : 1,
+                 },
+                 tabItem: {
+                     flex: 1,
+                     // padding: 8,
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                   },
+
+************In TabbarTop.js
+
+icon: {
+    height: 50,
+    width: "100%",
+  },
+
+/*
+          }
+
+//DialogModule.java - android - dismissExisting method
+ Activity activity = getCurrentActivity();
+          if(activity == null)
+            return;
+          oldFragment.dismiss();
+        }
+
+//AlertFragment.java
+@Override
+public Dialog onCreateDialog(Bundle savedInstanceState) {
+    if(getActivity() == null)
+      return;
+    return createDialog(getActivity(), getArguments(), this);
+}
+
+public void onDismiss(DialogInterface dialog) {
+    super.onDismiss(dialog);
+    if(getActivity() == null)
+    return;
+
+    if (mListener != null) {
+        mListener.onDismiss(dialog);
+    }
+}
+
+//Finger print issue
+//Fatal Exception: java.lang.IllegalStateException
+https://github.com/naoufal/react-native-touch-id/pull/118/files
+
+FingerprintAuthPackage.java
+
+public class FingerprintAuthPackage implements ReactPackage {
+
+    @Override
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+
+        if (android.os.Build.VERSION.SDK_INT > 23) {
+            modules.add(new FingerprintAuthModule(reactContext));
+        }
+
+        return modules;
+    }
+    }
+
+//Null Pointer - android
+public boolean isFingerprintAuthAvailable() {
+
+        if (android.os.Build.VERSION.SDK_INT < 23) {
+            return false;
+        }
+
+        try{
+            if (keyguardManager != null && !keyguardManager.isKeyguardSecure()) {
+                return false;
+            }
+
+            if (fingerprintManager != null && !fingerprintManager.isHardwareDetected()) {
+                return false;
+            }
+
+            if (fingerprintManager != null && !fingerprintManager.hasEnrolledFingerprints()) {
+                return false;
+            }
+            return true;
+        }catch (Exception e){
+            return true;
+        }
+}
+
+
+//ReactEditText.java
+
+//ReactEditText.java
+
+ @Override
+  public boolean onTouchEvent(MotionEvent ev) {
+      try {
+        switch (ev.getAction()) {
+          case MotionEvent.ACTION_DOWN:
+            mDetectScrollMovement = true;
+            // Disallow parent views to intercept touch events, until we can detect if we should be
+            // capturing these touches or not.
+            this.getParent().requestDisallowInterceptTouchEvent(true);
+            break;
+          case MotionEvent.ACTION_MOVE:
+            if (mDetectScrollMovement) {
+              if (!canScrollVertically(-1) &&
+                  !canScrollVertically(1) &&
+                  !canScrollHorizontally(-1) &&
+                  !canScrollHorizontally(1)) {
+                // We cannot scroll, let parent views take care of these touches.
+                this.getParent().requestDisallowInterceptTouchEvent(false);
+              }
+              mDetectScrollMovement = false;
+            }
+            break;
+        }
+            return super.onTouchEvent(ev);
+         } catch (Exception ignored) {
+            clearFocus();
+            return true;
+         }
+  }
+
+//build.gradle file
+
+        packagingOptions {
+                    exclude "lib/arm64-v8a/librealm-jni.so"
+        }
+
+//RCTVideoView
+
+@Override
+    public void onPrepared(MediaPlayer mp) {
+        try{
+        mMediaPlayerValid = true;
+        mVideoDuration = mp.getDuration();
+
+        WritableMap naturalSize = Arguments.createMap();
+        naturalSize.putInt(EVENT_PROP_WIDTH, mp.getVideoWidth());
+        naturalSize.putInt(EVENT_PROP_HEIGHT, mp.getVideoHeight());
+        if (mp.getVideoWidth() > mp.getVideoHeight())
+            naturalSize.putString(EVENT_PROP_ORIENTATION, "landscape");
+        else
+            naturalSize.putString(EVENT_PROP_ORIENTATION, "portrait");
+
+        WritableMap event = Arguments.createMap();
+        event.putDouble(EVENT_PROP_DURATION, mVideoDuration / 1000.0);
+        event.putDouble(EVENT_PROP_CURRENT_TIME, mp.getCurrentPosition() / 1000.0);
+        event.putMap(EVENT_PROP_NATURALSIZE, naturalSize);
+        // TODO: Actually check if you can.
+        event.putBoolean(EVENT_PROP_FAST_FORWARD, true);
+        event.putBoolean(EVENT_PROP_SLOW_FORWARD, true);
+        event.putBoolean(EVENT_PROP_SLOW_REVERSE, true);
+        event.putBoolean(EVENT_PROP_REVERSE, true);
+        event.putBoolean(EVENT_PROP_FAST_FORWARD, true);
+        event.putBoolean(EVENT_PROP_STEP_BACKWARD, true);
+        event.putBoolean(EVENT_PROP_STEP_FORWARD, true);
+        mEventEmitter.receiveEvent(getId(), Events.EVENT_LOAD.toString(), event);
+
+        applyModifiers();
+
+        if (mUseNativeControls && mediaController != null) {
+            initializeMediaControllerIfNeeded();
+            mediaController.setMediaPlayer(this);
+            mediaController.setAnchorView(this);
+
+            videoControlHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mediaController.setEnabled(true);
+                    mediaController.show();
+                }
+            });
+        }
+
+        }catch (NullPointerException e){
+            //IGNORE
+        }
+    }
+
+
+    //Picker view IOS - RCTPicker.m file
+@implementation RCTPicker
+- (instancetype)initWithFrame:(CGRect)frame
+{
+  if ((self = [super initWithFrame:frame])) {
+    _color = [UIColor blackColor];
+    _font = [UIFont systemFontOfSize:21];
+    _selectedIndex = NSNotFound;
+    _textAlign = NSTextAlignmentCenter;
+    self.delegate = self;
+     [self selectRow:0 inComponent:0 animated:YES]; // This line is added
+  }
+  return self;
+}
+
+
+//react-native-onesignal - Library changes
+
+https://github.com/geektimecoil/react-native-onesignal/commit/f41c2115f08bac607b11b8379f2b59abce1fb889#diff-8e7f2bb23dcd51f2c076f8f8125fdf27
+
+//ReactVideoView.java - prevent crash nullpointer
+ public void onPrepared(MediaPlayer mp) {
+        if(mp != null) {
+            mMediaPlayerValid = true;
+            mVideoDuration = mp.getDuration();
+
+            WritableMap naturalSize = Arguments.createMap();
+            naturalSize.putInt(EVENT_PROP_WIDTH, mp.getVideoWidth());
+            naturalSize.putInt(EVENT_PROP_HEIGHT, mp.getVideoHeight());
+            if (mp.getVideoWidth() > mp.getVideoHeight())
+                naturalSize.putString(EVENT_PROP_ORIENTATION, "landscape");
+            else
+                naturalSize.putString(EVENT_PROP_ORIENTATION, "portrait");
+
+            WritableMap event = Arguments.createMap();
+            event.putDouble(EVENT_PROP_DURATION, mVideoDuration / 1000.0);
+            event.putDouble(EVENT_PROP_CURRENT_TIME, mp.getCurrentPosition() / 1000.0);
+            event.putMap(EVENT_PROP_NATURALSIZE, naturalSize);
+            // TODO: Actually check if you can.
+            event.putBoolean(EVENT_PROP_FAST_FORWARD, true);
+            event.putBoolean(EVENT_PROP_SLOW_FORWARD, true);
+            event.putBoolean(EVENT_PROP_SLOW_REVERSE, true);
+            event.putBoolean(EVENT_PROP_REVERSE, true);
+            event.putBoolean(EVENT_PROP_FAST_FORWARD, true);
+            event.putBoolean(EVENT_PROP_STEP_BACKWARD, true);
+            event.putBoolean(EVENT_PROP_STEP_FORWARD, true);
+            mEventEmitter.receiveEvent(getId(), Events.EVENT_LOAD.toString(), event);
+
+            applyModifiers();
+            if (mUseNativeControls) {
+                try {
+                    initializeMediaControllerIfNeeded();
+                    mediaController.setMediaPlayer(this);
+                    mediaController.setAnchorView(this);
+
+                    videoControlHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mediaController.setEnabled(true);
+                            mediaController.show();
+                        }
+                    });
+                } catch (NullPointerException e) {
+
+                }
+            }
+
+        }
+    }
+
+- Solution for text input crash
+ https://github.com/facebook/react-native/issues/17530
+ - ReactEditText
+   @Override
+   protected void drawableStateChanged() {
+     try {
+       super.drawableStateChanged();
+     } catch (Exception e) {
+       Timber.e("Prevented Drawable crash!");
+     }
+   }
+
+   //ios/RCTOneSignal/RCTOneSignalEventEmitter.m - Line number 30 and implemented in RNMail, SafeArea, RCTImageLoader, InAppUtils
+   +(BOOL)requiresMainQueueSetup {
+       return YES;
+   }
